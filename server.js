@@ -4,7 +4,14 @@ const bodyParser = require("body-parser");
 const supabase = require("./config/supabase");
 
 const app = express();
-app.options("*", cors());
+var options = {
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(options));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -68,10 +75,10 @@ const passcodeDict = {
 app.post("/newProgress", async (req, res) => {
   var { currentStage, userid, passcode } = req.body;
   if (passcode == passcodeDict[currentStage]) {
-    await supabase
+    supabase
       .from("progress")
       .insert({
-        stage: newStage,
+        stage: currentStage + 1,
         uid: userid,
       })
       .then(({ data, error }) => {
@@ -79,7 +86,7 @@ app.post("/newProgress", async (req, res) => {
           return res.status(500).send(error);
         }
         return res.status(201).send({
-          stage: newStage,
+          stage: currentStage + 1,
           uid: userid,
         });
       });
@@ -107,8 +114,20 @@ app.post("/login", (req, res) => {
         } else {
           console.log("successful");
         }
-        var reply = data["user"]["id"];
-        res.send(`{"user":"${reply}"}`);
+        var userid = data["user"]["id"];
+        supabase
+          .from("progress")
+          .select()
+          .eq("uid", userid)
+          .then(({ data, error }) => {
+            if (error) {
+              console.log(error);
+              return;
+            }
+            console.log(data);
+            res.status(202).send(data);
+          });
+        res.send(`{"user":"${userid}"}`);
       });
   }
 });
