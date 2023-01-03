@@ -5,7 +5,7 @@ const supabase = require("../config/supabase");
 const superbase = require("../config/superbase");
 
 const app = express();
-app.use(cors());
+app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -53,7 +53,125 @@ app.post("/api/chat", async (req, res) => {
   res.status(200).json({ message: answer_output, openDoor: openDoor });
 });
 
+const passcodeDict = {
+  1: "hi",
+  2: "hi",
+  3: "hi",
+  4: "hi",
+  5: "hi",
+  6: "hi",
+  7: "hi",
+  8: "hi",
+  9: "hi",
+  10: "hi",
+};
+
+app.post("/newProgress", async (req, res) => {
+  var { currentStage, userid, passcode } = req.body;
+  if (!currentStage) {
+    currentStage = 1;
+    passcode = passcodeDict[currentStage];
+  }
+  if (passcode == passcodeDict[currentStage]) {
+    await supabase
+      .from("progress")
+      .insert({
+        stage: newStage,
+        uid: userid,
+      })
+      .then(({ data, error }) => {
+        if (error) {
+          return res.status(500).send(error);
+        }
+        return res.status(201).send({
+          stage: newStage,
+          uid: userid,
+        });
+      });
+  } else {
+    return res.status(500).send("Stop hacking!");
+  }
+});
+
+
+app.post("/login", (req, res) => {
+  var email = req.body.email;
+  var password = req.body.password;
+  if (email == "" || password == "") {
+    res.status(500).send("An input is empty");
+    return;
+  } else {
+    supabase.auth
+      .signInWithPassword({
+        email: email,
+        password: password,
+      })
+      .then(({ data, error }) => {
+        if (error) {
+          console.log(error);
+          return;
+        } else {
+          console.log("successful");
+        }
+        var reply = data["user"]["id"];
+        res.send(`{"user":"${reply}"}`);
+      });
+  }
+});
+
+app.post("/signup", (req, res) => {
+  var email = req.body.email;
+  var full_name = req.body.full_name;
+  var password = req.body.password;
+  var admin_number = req.body.admin_number;
+  var student_class = req.body.student_class;
+  supabase.auth
+    .signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          full_name: full_name,
+          admin_number: admin_number,
+          student_class: student_class,
+        },
+      },
+    })
+    .then(({ data, error }) => {
+      if (error) {
+        console.log(error);
+        return;
+      } else {
+        let stage = 1;
+        let uid = data["user"]["id"];
+        supabase
+          .from("progress")
+          .insert({
+            stage: stage,
+            uid: uid,
+          })
+          .then(({ data, error }) => {
+            if (error) {
+              console.log(error);
+              return;
+            }
+            res.status(202).send(data);
+          });
+      }
+    });
+});
+
+
+
+
+
+
+
+
+
+
 const PORT = process.env.PORT || 8081;
+
 app.listen(PORT, () => {
   console.log(`Server started on port localhost:${PORT}`);
 });
