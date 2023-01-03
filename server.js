@@ -1,8 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const supabase = require("../config/supabase");
-const superbase = require("../config/superbase");
+const supabase = require("./config/supabase");
 
 const app = express();
 app.options("*", cors());
