@@ -20,7 +20,7 @@ app.get("/test", (req, res) => {
   res.status(200).json({ response: "Am testing" });
 });
 
-const answers = "bob open door";
+const answers = "OPEN DOOR";
 
 app.post("/api/chat", async (req, res) => {
   let { prompt } = req.body;
@@ -43,7 +43,7 @@ app.post("/api/chat", async (req, res) => {
     if (!answer_output) {
       answer_output = response.data.choices[0].text;
     }
-    if (prompt.toLowerCase().includes(answers)) {
+    if (prompt.toUpperCase().includes(answers)) {
       openDoor = true;
     }
   } catch (error) {
@@ -53,7 +53,7 @@ app.post("/api/chat", async (req, res) => {
 });
 
 const passcodeDict = {
-  1: "hi",
+  1: "8607a8ddaae25c657fb4e340594e9906329956efc1f102ab59dc9c8f4db2fa42",
   2: "hi",
   3: "hi",
   4: "hi",
@@ -67,10 +67,6 @@ const passcodeDict = {
 
 app.post("/newProgress", async (req, res) => {
   var { currentStage, userid, passcode } = req.body;
-  if (!currentStage) {
-    currentStage = 1;
-    passcode = passcodeDict[currentStage];
-  }
   if (passcode == passcodeDict[currentStage]) {
     await supabase
       .from("progress")
@@ -91,7 +87,6 @@ app.post("/newProgress", async (req, res) => {
     return res.status(500).send("Stop hacking!");
   }
 });
-
 
 app.post("/login", (req, res) => {
   var email = req.body.email;
@@ -159,15 +154,6 @@ app.post("/signup", (req, res) => {
       }
     });
 });
-
-
-
-
-
-
-
-
-
 
 const PORT = process.env.PORT || 8081;
 
