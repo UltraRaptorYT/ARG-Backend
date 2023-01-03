@@ -48,3 +48,8 @@ app.post("/api/chat", async (req, res) => {
   }
   res.status(200).json({ message: answer_output });
 });
+
+const PORT = process.env || 8081;
+app.listen(PORT, () => {
+  console.log(`Server started on port localhost:${PORT}`);
+});
