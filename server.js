@@ -6,7 +6,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-
 const { Configuration, OpenAIApi } = require("openai");
 
 const configuration = new Configuration({
@@ -40,8 +39,9 @@ app.post("/api/chat", async (req, res) => {
         presence_penalty: 0,
         stop: [" Human:", " AI:"],
       });
-
-      answer_output = response.data.choices[0].text ? !answer_output;
+      if (!answer_output) {
+        answer_output = response.data.choices[0].text;
+      }
     } catch (error) {
       answer_output = "?";
     }
