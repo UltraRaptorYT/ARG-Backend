@@ -41,7 +41,7 @@ app.post("/api/chat", async (req, res) => {
         stop: [" Human:", " AI:"],
       });
 
-      answer_output ||= response.data.choices[0].text;
+      answer_output = response.data.choices[0].text ? !answer_output;
     } catch (error) {
       answer_output = "?";
     }
