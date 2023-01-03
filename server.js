@@ -44,13 +44,12 @@ app.post("/api/chat", async (req, res) => {
     if (!answer_output) {
       answer_output = response.data.choices[0].text;
     }
-    if (answers in prompt) {
+    if (prompt.toLowerCase().includes(answers)) {
       openDoor = true;
     }
   } catch (error) {
     answer_output = "?";
   }
-
   res.status(200).json({ message: answer_output, openDoor: openDoor });
 });
 
