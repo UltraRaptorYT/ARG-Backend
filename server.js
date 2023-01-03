@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const supabase = require("./config/supabase");
+const superbase = require("./config/superbase");
 
 const app = express();
 var options = {
@@ -23,11 +24,24 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
+const passcodeDict = {
+  1: "8607a8ddaae25c657fb4e340594e9906329956efc1f102ab59dc9c8f4db2fa42",
+  2: "hi",
+  3: "hi",
+  4: "hi",
+  5: "hi",
+  6: "hi",
+  7: "hi",
+  8: "hi",
+  9: "hi",
+  10: "hi",
+};
+
 app.get("/test", (req, res) => {
   res.status(200).json({ response: "Am testing" });
 });
 
-const answers = "OPEN DOOR";
+const answers = "BOB OPEN DOORS";
 
 app.post("/api/chat", async (req, res) => {
   let { prompt } = req.body;
@@ -51,7 +65,7 @@ app.post("/api/chat", async (req, res) => {
       answer_output = response.data.choices[0].text;
     }
     if (prompt.toUpperCase().includes(answers)) {
-      openDoor = true;
+      openDoor = passcodeDict[1];
     }
   } catch (error) {
     answer_output = "?";
@@ -59,36 +73,33 @@ app.post("/api/chat", async (req, res) => {
   res.status(200).json({ message: answer_output, openDoor: openDoor });
 });
 
-const passcodeDict = {
-  1: "8607a8ddaae25c657fb4e340594e9906329956efc1f102ab59dc9c8f4db2fa42",
-  2: "hi",
-  3: "hi",
-  4: "hi",
-  5: "hi",
-  6: "hi",
-  7: "hi",
-  8: "hi",
-  9: "hi",
-  10: "hi",
-};
-
 app.post("/newProgress", async (req, res) => {
   var { currentStage, userid, passcode } = req.body;
   if (passcode == passcodeDict[currentStage]) {
-    supabase
+    superbase
       .from("progress")
-      .insert({
-        stage: currentStage + 1,
-        uid: userid,
-      })
+      .update({ completed_at: time })
+      .eq("uid", userid)
+      .eq("stage", currentStage)
       .then(({ data, error }) => {
         if (error) {
           return res.status(500).send(error);
         }
-        return res.status(201).send({
-          stage: currentStage + 1,
-          uid: userid,
-        });
+        supabase
+          .from("progress")
+          .insert({
+            stage: currentStage + 1,
+            uid: userid,
+          })
+          .then(({ data, error }) => {
+            if (error) {
+              return res.status(500).send(error);
+            }
+            return res.status(201).send({
+              stage: currentStage + 1,
+              uid: userid,
+            });
+          });
       });
   } else {
     return res.status(500).send("Stop hacking!");
@@ -115,17 +126,17 @@ app.post("/login", (req, res) => {
           console.log("successful");
         }
         var userid = data["user"]["id"];
-        supabase
+        superbase
           .from("progress")
           .select()
           .eq("uid", userid)
           .then(({ data, error }) => {
             if (error) {
               console.log(error);
-              return;
+              return res.status(500).send(data);
             }
             console.log(data);
-            res.status(202).send(data);
+            return res.status(200).send(data[0]);
           });
       });
   }
