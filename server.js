@@ -81,7 +81,7 @@ app.post("/newProgress", async (req, res) => {
   if (passcode == passcodeDict[currentStage]) {
     superbase
       .from("progress")
-      .update({ completed_at: time })
+      .update({ completed_at: new Date() })
       .eq("uid", userid)
       .eq("stage", currentStage)
       .then(({ data, error }) => {
