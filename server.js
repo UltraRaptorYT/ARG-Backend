@@ -132,6 +132,7 @@ app.post("/login", (req, res) => {
           .from("progress")
           .select()
           .eq("uid", userid)
+          .order("stage", { ascending: false })
           .then(({ data, error }) => {
             if (error) {
               console.log(error);
