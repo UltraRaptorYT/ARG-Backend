@@ -65,7 +65,7 @@ app.post("/api/chat", async (req, res) => {
       answer_output = response.data.choices[0].text;
     }
     if (prompt.toUpperCase().includes(answers)) {
-      openDoor = passcodeDict[2];
+      openDoor = passcodeDict[1];
     }
   } catch (error) {
     answer_output = "?";
