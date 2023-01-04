@@ -74,6 +74,7 @@ app.post("/api/chat", async (req, res) => {
 
 app.post("/newProgress", async (req, res) => {
   var { currentStage, userid, passcode } = req.body;
+  currentStage = parseInt(currentStage);
   if (passcode == passcodeDict[currentStage]) {
     superbase
       .from("progress")
