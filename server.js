@@ -26,7 +26,7 @@ const openai = new OpenAIApi(configuration);
 
 const passcodeDict = {
   1: "8607a8ddaae25c657fb4e340594e9906329956efc1f102ab59dc9c8f4db2fa42",
-  2: "hi",
+  2: "96c32e6230333f3d32a3482cd4a8eb85c88c2f6c4de80788184e9cd5adc4fa43",
   3: "hi",
   4: "hi",
   5: "hi",
