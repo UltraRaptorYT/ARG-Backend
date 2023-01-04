@@ -41,12 +41,11 @@ app.get("/test", (req, res) => {
   res.status(200).json({ response: "Am testing" });
 });
 
-const answers = "BOB OPEN DOORS";
+const answers = "BOB OPEN DOOR";
 
 app.post("/api/chat", async (req, res) => {
   let { prompt } = req.body;
   let answer_output = answers[prompt];
-  let openDoor = false;
   try {
     if (prompt.length == 0) {
       throw new Error();
@@ -64,13 +63,17 @@ app.post("/api/chat", async (req, res) => {
     if (!answer_output) {
       answer_output = response.data.choices[0].text;
     }
-    if (prompt.toUpperCase().includes(answers)) {
-      openDoor = passcodeDict[1];
-    }
   } catch (error) {
     answer_output = "?";
   }
-  res.status(200).json({ message: answer_output, openDoor: openDoor });
+  res
+    .status(200)
+    .json({
+      message: answer_output,
+      openDoor: prompt.toUpperCase().includes(answers)
+        ? passcodeDict[1]
+        : false,
+    });
 });
 
 app.post("/newProgress", async (req, res) => {
