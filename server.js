@@ -41,7 +41,7 @@ app.get("/test", (req, res) => {
   res.status(200).json({ response: "Am testing" });
 });
 
-const answers = "BOB OPEN DOOR";
+const answers = "BOB OPEN DOORS";
 
 app.post("/api/chat", async (req, res) => {
   let { prompt } = req.body;
@@ -66,14 +66,10 @@ app.post("/api/chat", async (req, res) => {
   } catch (error) {
     answer_output = "?";
   }
-  res
-    .status(200)
-    .json({
-      message: answer_output,
-      openDoor: prompt.toUpperCase().includes(answers)
-        ? passcodeDict[1]
-        : false,
-    });
+  res.status(200).json({
+    message: answer_output,
+    openDoor: prompt.toUpperCase().includes(answers) ? passcodeDict[1] : false,
+  });
 });
 
 app.post("/newProgress", async (req, res) => {
@@ -85,6 +81,7 @@ app.post("/newProgress", async (req, res) => {
       .eq("uid", userid)
       .eq("stage", currentStage)
       .then(({ data, error }) => {
+        console.log(error);
         if (error) {
           return res.status(500).send(error);
         }
@@ -95,6 +92,7 @@ app.post("/newProgress", async (req, res) => {
             uid: userid,
           })
           .then(({ data, error }) => {
+            console.log(error);
             if (error) {
               return res.status(500).send(error);
             }
