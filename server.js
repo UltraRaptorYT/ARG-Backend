@@ -75,36 +75,38 @@ app.post("/api/chat", async (req, res) => {
 app.post("/newProgress", async (req, res) => {
   var { currentStage, userid, passcode } = req.body;
   currentStage = parseInt(currentStage);
+  console.log(passcodeDict[currentStage]);
+  console.log(passcode);
   if (passcode == passcodeDict[currentStage]) {
-  console.log(userid);
-  superbase
-    .from("progress")
-    .update({ completed_at: new Date() })
-    .eq("uid", userid)
-    .eq("stage", currentStage)
-    .then(({ data, error }) => {
-      console.log(error);
-      console.log(data);
-      if (error) {
-        return res.status(500).send(error);
-      }
-      supabase
-        .from("progress")
-        .insert({
-          stage: currentStage + 1,
-          uid: userid,
-        })
-        .then(({ data, error }) => {
-          console.log(error);
-          if (error) {
-            return res.status(500).send(error);
-          }
-          return res.status(201).send({
+    console.log(userid);
+    superbase
+      .from("progress")
+      .update({ completed_at: new Date() })
+      .eq("uid", userid)
+      .eq("stage", currentStage)
+      .then(({ data, error }) => {
+        console.log(error);
+        console.log(data);
+        if (error) {
+          return res.status(500).send(error);
+        }
+        supabase
+          .from("progress")
+          .insert({
             stage: currentStage + 1,
             uid: userid,
+          })
+          .then(({ data, error }) => {
+            console.log(error);
+            if (error) {
+              return res.status(500).send(error);
+            }
+            return res.status(201).send({
+              stage: currentStage + 1,
+              uid: userid,
+            });
           });
-        });
-    });
+      });
   } else {
     return res.status(500).send("Stop hacking!");
   }
