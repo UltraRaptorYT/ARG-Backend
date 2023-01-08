@@ -28,13 +28,7 @@ const passcodeDict = {
   1: "8607a8ddaae25c657fb4e340594e9906329956efc1f102ab59dc9c8f4db2fa42",
   2: "96c32e6230333f3d32a3482cd4a8eb85c88c2f6c4de80788184e9cd5adc4fa43",
   3: "6a88e12d1d79e553e89b9dc14782de2ebfc8e385b8400af76f7b035a85d6970b",
-  4: "hi",
-  5: "hi",
-  6: "hi",
-  7: "hi",
-  8: "hi",
-  9: "hi",
-  10: "hi",
+  4: "Knacam,jW6s@Y9#`~2W;&sr+;4eA@yUwA%*rYh~2uxtjQ38d])s^zbdA~AWTcfnD",
 };
 
 app.get("/test", (req, res) => {
