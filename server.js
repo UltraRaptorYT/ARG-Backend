@@ -6,7 +6,7 @@ const superbase = require("./config/superbase");
 
 const app = express();
 var options = {
-  origin: "*",
+  origin: "https://socc-arg.web.app/",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   preflightContinue: false,
   optionsSuccessStatus: 204,
