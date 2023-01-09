@@ -131,14 +131,14 @@ app.post("/login", (req, res) => {
           .from("progress")
           .select()
           .eq("uid", userid)
-          .order("stage")
+          .order("stage", {ascending: false})
           .then(({ data, error }) => {
             if (error) {
               console.log(error);
               return res.status(500).send(error);
             }
             console.log(data);
-            return res.status(200).send(data[data.length - 1]);
+            return res.status(200).send(data[0]);
           });
       });
   }
